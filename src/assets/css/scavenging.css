@@ -1,0 +1,17 @@
+.qr-cod {
+    text-align: center;
+    position: relative;
+    bottom: -6rem;
+}
+
+.scavenging-one {
+    color: #000;
+    font-size: 1.4rem;
+}
+
+.scavenging-two {
+    margin: 1rem auto 0;
+    font-size: 1rem;
+    color: #808080;
+    width: 16rem;
+}

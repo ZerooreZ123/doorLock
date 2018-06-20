@@ -1,0 +1,129 @@
+.index-chamber {
+    font-size: 1rem;
+    color: #999;
+}
+
+.index-href {
+    text-align: right;
+    position: relative;
+    top: 0.4rem;
+    right: 0.4rem;
+}
+
+.index-href a {
+    color: #4591e4;
+    font-weight: 600;
+}
+
+.index-root .weui-btn_default {
+    color: #4591e4;
+    border-color: #4591e4;
+    border-width: 0.04rem;
+    width: 84%;
+    background-color: #fff;
+    margin-left: 2.2rem;
+}
+
+.index-root .weui-btn_default:not(.weui-btn_disabled):active {
+    color: #4591e4;
+    border-color: #4591e4;
+}
+
+.btn-scaveng {
+    position: relative;
+    padding: 0.9rem;
+    bottom: -11rem;
+}
+
+.index-root .weui-icon-info:active {
+    color: #000;
+}
+
+.index-root .weui-icon_msg {
+    font-size: 8rem;
+}
+
+.index-root .index-center {
+    position: relative;
+    bottom: -4rem;
+}
+
+.index-center .remarks-one{
+    font-size: 1.4rem;
+    font-weight: 500;
+}
+
+.index-center .remarks-one .all-one{
+    display: inline-block;
+    background-size: 100% 100%;
+    position: relative;
+}
+
+.index-center .remarks-one .click {
+    background: url("../../assets/image/click.png");
+    background-size: 100% 100%;
+    top: 0.4rem;
+    width: 1.4rem;
+    height: 1.8rem;
+}
+.smile {
+    background: url("../../assets/image/smile.png");
+    top: 0.2rem;
+    width: 1.4rem;
+    height: 1.4rem;
+}
+
+.sad {
+    background: url("../../assets/image/sad.png");
+    top: 0.2rem;
+    width: 1.4rem;
+    height: 1.4rem;
+}
+
+.index-center .remarks-two{
+    color: #999;
+    font-size: 1rem;
+    margin-top: 1rem;
+}
+
+.index-center #index-img i {
+    background: url("../../assets/image/index.png");
+    background-size: 100% 100%;
+    display: inline-block;
+    width: 14.6rem;
+    height: 14.6rem;
+}
+
+.index-center #index-img i:active {
+    background: url("../../assets/image/HoldDowm.png");
+    background-size: 100% 100%;
+}
+
+.index-center #index-img .all {
+    display: inline-block;
+    background-size: 100% 100%;
+    position: absolute;
+    top: 6rem;
+}
+
+.index-center #index-img .lock {
+    background: url("../../assets/image/lock.png");
+    background-size: 100% 100%;
+    width: 2rem;
+    height: 3rem;
+    left: 10.8rem;
+}
+
+.tick {
+    background: url("../../assets/image/Tick.png");
+    width: 4rem;
+    height: 3rem;
+    left: 10rem;
+}
+
+.fail {
+    background: url("../../assets/image/fail.png");
+    width: 1rem;
+    height: 4rem;
+    left: 11.2rem;
+}

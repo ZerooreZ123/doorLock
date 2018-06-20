@@ -1,0 +1,27 @@
+* {
+    margin: 0;
+    padding: 0;
+}
+
+html, body {
+    height: 100%;
+}
+
+#app .vux-header {
+    background-color: #fff;
+    border-bottom: 0.03rem solid #ccc;
+}
+
+#app .vux-header .vux-header-left a {
+    color: #3a3a3a;
+    font-size: 1.1rem;
+}
+
+#app .vux-header .vux-header-left .left-arrow:before {
+    border: 0.03rem solid #3a3a3a;
+    border-width: 0.2rem 0 0 0.2rem;
+}
+
+#app .vux-header .vux-header-title {
+    color: #3a3a3a;
+}

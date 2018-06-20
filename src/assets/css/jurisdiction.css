@@ -1,0 +1,26 @@
+.vux-x-icon {
+    fill: #6E737E;
+}
+
+.index-center{
+    position: relative;
+    bottom: -8rem;
+}
+
+.index-center .remarks-one{
+    font-family: STHeiti;
+    margin: 1rem auto 0;
+    font-size: 1.2rem;
+    font-weight: 600;
+}
+
+.index-center .remarks-two{
+    color: #999;
+    font-size: 0.9rem;
+    margin: 1rem auto 0;
+}
+
+.index-center img {
+    width: 9rem;
+    height: 9rem;
+}
