@@ -5,17 +5,27 @@
       <img class="icon" :src="require('@/assets/img/icon/x.png')" v-if="isShow" @click="clear" alt="">
     </div>
     <div class="buttonBox flex-center">
-      <div class="button flex-center">完成</div>
+      <div @click="refer" :class="inputText === ''?'buttonTint flex-center' : 'buttonDeep flex-center'">完成</div>
     </div>
+    <tip-mes :msg="message" v-if="isDisplay"></tip-mes>
   </div>
 </template>
 <script>
+import TipMes from "@/components/common/tipMes";
 export default {
+  components: {
+    TipMes
+  },
   data() {
     return {
+      isDisplay: false,
+      message: {},
       inputText: "",
       isShow: false
     };
+  },
+  mounted() {
+    document.querySelector("title").innerText = "设置名字";
   },
   watch: {
     inputText() {
@@ -29,6 +39,22 @@ export default {
   methods: {
     clear() {
       this.inputText = "";
+    },
+    refer() {
+      if (this.inputText === "") {
+        this.isDisplay = true;
+        this.message = { name: "没有输入名字，请重新填写", isShow: false };
+        setTimeout(() => {
+          this.isDisplay = false;
+        }, 1.5e3);
+        return false;
+      } else {
+        this.isDisplay = true;
+        this.message = { name: "正在加载", isShow: true };
+        setTimeout(() => {
+          this.isDisplay = false;
+        }, 1.5e3);
+      }
     }
   }
 };
@@ -41,16 +67,16 @@ export default {
   right: 0;
   bottom: 0;
   left: 0;
-  background: #f3f5f7;
+  background: #f3f3f3;
 }
 .inputBox {
   width: 100%;
   height: 90px;
   background: #fff;
-  border-bottom: 2px solid #f6f6f6;
+  border-bottom: 2px solid #f0f0f0;
 }
 .inputName {
-  height: 40%;
+  height: 48%;
   width: 80%;
   font-size: 30px;
   padding: 0;
@@ -71,12 +97,19 @@ export default {
   width: 100%;
   height: 200px;
 }
-.button {
+.buttonDeep,
+.buttonTint {
   width: 83.2%;
   height: 78px;
   font-size: 30px;
+  border-radius: 4px;
+}
+.buttonDeep {
   color: #65a2e6;
   border: 2px solid #65a2e6;
-  border-radius: 4px;
+}
+.buttonTint {
+  color: #c8daef;
+  border: 2px solid #c8daef;
 }
 </style>

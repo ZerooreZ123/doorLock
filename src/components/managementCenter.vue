@@ -18,7 +18,7 @@
         </span>
       </div>
     </div>
-    <div class="group">
+    <div class="group" @click="goCenter">
       <div class="item flex-between">
         <span>人脸识别</span>
         <span class="flex-center">设置
@@ -36,10 +36,13 @@
 </template>
 <script>
 export default {
-  data () {
+  data() {
     return {};
   },
   watch: {},
+  mounted() {
+    document.querySelector("title").innerText = "管理中心";
+  },
   methods: {
     click(key) {
       console.log(key);
@@ -52,6 +55,9 @@ export default {
     },
     setPassword() {
       this.$router.push({ path: "/settingPassword" });
+    },
+    goCenter() {
+      this.$router.push({ path: "/administrator" });
     }
   }
 };

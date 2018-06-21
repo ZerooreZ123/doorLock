@@ -22,6 +22,9 @@ export default {
     };
   },
   watch: {},
+  mounted() {
+    document.querySelector("title").innerText = "设置性别";
+  },
   methods: {
     selectSex(i) {
       this.sexSective = i;
@@ -37,15 +40,15 @@ export default {
   right: 0;
   bottom: 0;
   left: 0;
-  background: #f3f5f7;
+  background: #f3f3f3;
 }
 .group {
   padding: 0 28px;
   background: #fff;
-  border-bottom: 2px solid #f6f6f6;
+  border-bottom: 2px solid #f0f0f0;
 }
 .sexItem:nth-child(1) {
-  border-bottom: 2px solid #f6f6f6;
+  border-bottom: 2px solid #f0f0f0;
 }
 .sexItem {
   width: 100%;

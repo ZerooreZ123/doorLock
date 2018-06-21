@@ -7,30 +7,55 @@
     <div class="setting ">
       <div class="item flex-between">
         <span>旧密码</span>
-        <input type="password" placeholder="请输入旧密码">
+        <input type="password" placeholder="请输入旧密码" v-model="oldCode">
       </div>
       <div class="item flex-between">
         <span>新密码</span>
-        <input type="password" placeholder="请输入新密码">
+        <input type="password" placeholder="请输入新密码" v-model="newCode">
       </div>
       <div class="setPassword flex-between">
         <span>确认密码</span>
-        <input type="password" placeholder="请再次输入新密码">
+        <input type="password" placeholder="请再次输入新密码" v-model="confirmCode">
       </div>
     </div>
     <div class="tip flex-end">密码必须是6至8位纯数字</div>
     <div class="buttonBox flex-center">
-      <div class="button flex-center">完成</div>
+      <div @click="refer" :class="oldCode&&newCode&&confirmCode?'buttonDeep flex-center':'buttonTint flex-center'">完成</div>
     </div>
+    <tip-mes :msg="message" v-if="isDisplay"></tip-mes>
   </div>
 </template>
 <script>
+import TipMes from "@/components/common/tipMes";
 export default {
+  components: {
+    TipMes
+  },
   data() {
-    return {};
+    return {
+      oldCode: "",
+      newCode: "",
+      confirmCode: "",
+      isDisplay: false,
+      message: {}
+    };
+  },
+  mounted() {
+    document.querySelector("title").innerText = "设置设备密码";
   },
   watch: {},
-  methods: {}
+  methods: {
+    refer() {
+      if (!this.oldCode || !this.newCode || !this.confirmCode) {
+        this.isDisplay = true;
+        this.message = { name: "请输入完整密码", isShow: false };
+        setTimeout(() => {
+          this.isDisplay = false;
+        }, 1.5e3);
+        return false;
+      }
+    }
+  }
 };
 </script>
 
@@ -47,8 +72,8 @@ export default {
   height: 90px;
   font-size: 28px;
   padding: 0 28px;
-  border-bottom: 2px solid #f6f6f6;
-  color: #999;
+  border-bottom: 2px solid #f0f0f0;
+  color: #666;
 }
 .floor:nth-child(2) {
   color: #000;
@@ -59,23 +84,24 @@ export default {
 }
 .item {
   height: 90px;
-  border-bottom: 2px solid #f6f6f6;
+  border-bottom: 2px solid #f0f0f0;
   margin: 0 28px;
 }
 .setPassword {
   height: 90px;
-  border-bottom: 2px solid #f6f6f6;
+  border-bottom: 2px solid #f0f0f0;
   padding: 0 28px;
-  color: #999;
+  color: #666;
 }
 .item > span {
-  color: #999;
+  color: #666;
 }
 .num {
   color: #000;
 }
 .item > input,
 .setPassword > input {
+  width: 70%;
   border: 0;
   outline: none;
   background: #fff;
@@ -89,7 +115,7 @@ input::-webkit-input-placeholder {
   font-size: 24px;
   height: 74px;
   margin-right: 28px;
-  color: #787878;
+  color: #666;
 }
 .buttonBox {
   position: fixed;
@@ -98,12 +124,19 @@ input::-webkit-input-placeholder {
   width: 100%;
   height: 200px;
 }
-.button {
+.buttonDeep,
+.buttonTint {
   width: 83.2%;
   height: 78px;
   font-size: 30px;
+  border-radius: 4px;
+}
+.buttonDeep {
   color: #65a2e6;
   border: 2px solid #65a2e6;
-  border-radius: 4px;
+}
+.buttonTint {
+  color: #c8daef;
+  border: 2px solid #c8daef;
 }
 </style>

@@ -14,25 +14,25 @@ Vue.use(Router);
 export default new Router({
   routes: [
     {
-            path: "/",
-            redirect: "/home"
-        },
-        {
-            path: "/home",
-            name: "Home",
-            component: Home
-        },
-        {
-            path: "/scavenging",
-            name: "scavenging",
-            component: Scavenging
-        },
-        {
-            path: "/jurisdiction",
-            name: "jurisdiction",
-            component: Jurisdiction
-        },
-        {
+      path: "/",
+      redirect: "/home"
+    },
+    {
+      path: "/home",
+      name: "Home",
+      component: Home
+    },
+    {
+      path: "/scavenging",
+      name: "scavenging",
+      component: Scavenging
+    },
+    {
+      path: "/jurisdiction",
+      name: "jurisdiction",
+      component: Jurisdiction
+    },
+    {
       path: "/administrator",
       name: "Administrator",
       component: Administrator
