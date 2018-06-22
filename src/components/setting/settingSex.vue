@@ -8,12 +8,13 @@
     </div>
     <div>
       <div class="buttonBox flex-center">
-        <div class="button flex-center">完成</div>
+        <div @click="refer" class="button flex-center">完成</div>
       </div>
     </div>
   </div>
 </template>
 <script>
+import NetRequest from "@/utils/NetRequest";
 export default {
   data() {
     return {
@@ -28,6 +29,12 @@ export default {
   methods: {
     selectSex(i) {
       this.sexSective = i;
+    },
+    async refer() {
+      const data = await NetRequest.post("updateAdminInfo", { name: "陈大山", sex: this.sexBox[this.sexSective], id: 15 });
+      if (JSON.parse(data).result === "T") {
+      } else {
+      }
     }
   }
 };

@@ -5,7 +5,7 @@
         <div @click="openStore" class="flex-center">{{storeName}}
           <img class="icon" :src="require('@/assets/img/icon/down.png')" alt="">
         </div>
-        <div class="QR">扫码开启门禁</div>
+        <div class="QR" @click="openDoor">扫码开启门禁</div>
       </div>
     </div>
     <div class="content">
@@ -55,6 +55,9 @@ export default {
   methods: {
     goCenter() {
       this.$router.push({ path: "/managementCenter" });
+    },
+    openDoor() {
+      this.$router.push({ path: "/scavenging" });
     },
     selectFloor(num) {
       this.floorIndex = num;
@@ -115,7 +118,7 @@ export default {
 }
 .content {
   display: flex;
-  min-height: 90%;
+  height: 100%;
   width: 100%;
   margin-top: 102px;
 }

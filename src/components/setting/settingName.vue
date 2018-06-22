@@ -12,6 +12,7 @@
 </template>
 <script>
 import TipMes from "@/components/common/tipMes";
+import NetRequest from "@/utils/NetRequest";
 export default {
   components: {
     TipMes
@@ -40,7 +41,7 @@ export default {
     clear() {
       this.inputText = "";
     },
-    refer() {
+    async refer() {
       if (this.inputText === "") {
         this.isDisplay = true;
         this.message = { name: "没有输入名字，请重新填写", isShow: false };
@@ -48,12 +49,18 @@ export default {
           this.isDisplay = false;
         }, 1.5e3);
         return false;
-      } else {
-        this.isDisplay = true;
-        this.message = { name: "正在加载", isShow: true };
+      }
+      const data = await NetRequest.post("updateAdminInfo", { name: "陈大山", sex: "女", id: 15 });
+      this.isDisplay = true;
+      this.message = { name: "正在加载", isShow: true };
+      if (data.success === "T") {
+        this.message = { name: "设置成功", isShow: false };
         setTimeout(() => {
           this.isDisplay = false;
         }, 1.5e3);
+      } else {
+        // alert(data.errorMsg);
+        this.isDisplay = false;
       }
     }
   }

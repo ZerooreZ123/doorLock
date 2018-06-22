@@ -35,6 +35,7 @@
   </div>
 </template>
 <script>
+// import NetRequest from "@/utils/NetRequest";
 export default {
   data() {
     return {};
@@ -57,7 +58,7 @@ export default {
       this.$router.push({ path: "/settingPassword" });
     },
     goCenter() {
-      this.$router.push({ path: "/administrator" });
+      this.$router.push({ path: "/settingPhoto" });
     }
   }
 };
