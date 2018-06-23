@@ -19,14 +19,18 @@ export default {
   },
   data() {
     return {
+      sex: "",
       isDisplay: false,
       message: {},
       inputText: "",
-      isShow: false
+      isShow: false,
+      userId: JSON.parse(window.sessionStorage.getItem("info")).id,
+      type: JSON.parse(window.sessionStorage.getItem("info")).type
     };
   },
   mounted() {
     document.querySelector("title").innerText = "设置名字";
+    this.info();
   },
   watch: {
     inputText() {
@@ -50,17 +54,26 @@ export default {
         }, 1.5e3);
         return false;
       }
-      const data = await NetRequest.post("updateAdminInfo", { name: "陈大山", sex: "女", id: 15 });
       this.isDisplay = true;
       this.message = { name: "正在加载", isShow: true };
-      if (data.success === "T") {
-        this.message = { name: "设置成功", isShow: false };
-        setTimeout(() => {
-          this.isDisplay = false;
-        }, 1.5e3);
+      if (this.type === "0") {
+        await NetRequest.post("updateAdminInfo", { name: this.inputText, sex: this.sex, id: this.userId });
       } else {
-        // alert(data.errorMsg);
+        await NetRequest.post("updateTenantInfo", { name: this.inputText, sex: this.sex, id: this.userId });
+      }
+      this.message = { name: "设置成功", isShow: false };
+      setTimeout(() => {
         this.isDisplay = false;
+        window.history.go(-1);
+      }, 1.5e3);
+    },
+    async info() {
+      if (this.type === "0") {
+        const data = await NetRequest.post("getAdminInfo", { id: this.userId });
+        this.sex = data[0].sex;
+      } else {
+        const data = await NetRequest.post("getTenantInfo", { id: this.userId });
+        this.sex = data[0].sex;
       }
     }
   }

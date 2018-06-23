@@ -2,50 +2,57 @@
   <div class="wrap">
     <div class="header">
       <div class="site flex-between">
-        <div @click="openStore" class="flex-center">{{storeName}}
+        <div @click="openStoreList" class="flex-center">{{storeName.name}}
           <img class="icon" :src="require('@/assets/img/icon/down.png')" alt="">
         </div>
-        <div class="QR" @click="openDoor">扫码开启门禁</div>
+        <div class="QR" @click="goQR">扫码开启门禁</div>
       </div>
     </div>
     <div class="content">
       <div class="floor">
-        <div @click="selectFloor(index)" :class="floorIndex===index?'floorActive':'floorItem'" v-for="(i,index) in 13" :key="index">{{`${i}层`}}</div>
+        <div @click="selectFloor(index,i)" :class="floorIndex===index?'floorActive':'floorItem'" v-for="(i,index) in floorList" :key="index">{{i.floor}}</div>
       </div>
       <div class="room">
-        <span @click="selectRoom($event,index)" class="roomItem" v-for="(i,index) in 20" :key="index">{{`120${i}`}}
+        <span @click="selectRoom(item,index)" :class="item.active ? 'selectRoom' : 'roomItem'" v-for="(item,index) in num" :key="index">{{item.number}}
         </span>
       </div>
     </div>
-    <div class="buttonGrounp flex-center">开启门锁</div>
+    <div class="buttonGrounp flex-center" @click="openDoor">开启门锁</div>
     <div class="ball flex-center" @click="goCenter">管理中心</div>
     <div class="mask" v-if="isMask">
       <div class="masktop" @click="closeMask"></div>
       <div class="store">
-        <div @click="selectStore(item)" :class="storeName === item?'storeActive':'storeItem'" v-for="(item,index) in storeList" :key="index">{{item}}
-          <img class="draw" :src="require('@/assets/img/icon/Tick.png')" v-if="storeName === item?true:false ">
+        <div @click="selectStore(item)" :class="storeName.name === item.name?'storeActive':'storeItem'" v-for="(item,index) in storeList" :key="index">{{item.name}}
+          <img class="draw" :src="require('@/assets/img/icon/Tick.png')" v-if="storeName.name === item.name?true:false ">
         </div>
       </div>
     </div>
   </div>
 </template>
 <script>
+import NetRequest from "@/utils/NetRequest";
 export default {
   data() {
     return {
-      storeName: "中和路店",
+      storeName: {},
       isMask: false,
       isPhoto: false,
       classItem: "",
       isShow: false,
       floorIndex: 0,
-      roomIndex: 0,
-      arr: [],
-      storeList: ["同心路店", "玉桥店", "景祥店", "中和路店"]
+      roomIndex: "",
+      buildingId: JSON.parse(window.sessionStorage.getItem("info")).building,
+      storeId: JSON.parse(window.sessionStorage.getItem("info")).building.split(",")[0],
+      storeList: [],
+      floorList: [],
+      numList: [],
+      num: []
     };
   },
   mounted() {
     document.querySelector("title").innerText = "智能门锁";
+    this.getBuilding();
+    this.getVirginInfo(this.storeId);
   },
   watch: {
     selectCheckbox() {
@@ -53,33 +60,78 @@ export default {
     }
   },
   methods: {
-    goCenter() {
-      this.$router.push({ path: "/managementCenter" });
-    },
-    openDoor() {
-      this.$router.push({ path: "/scavenging" });
-    },
-    selectFloor(num) {
-      this.floorIndex = num;
-    },
-    selectRoom(e, num) {
-      if (e.target.className.indexOf("selectRoom") === -1) {
-        e.target.className = "selectRoom";
-        this.arr.push(num);
+    selectRoom(el, i) {
+      if (el.active) {
+        el.active = false;
       } else {
-        e.target.className = "roomItem";
-        this.arr.splice(this.arr.indexOf(num), 1);
+        el.active = true;
+      }
+      // el.active = !el.active;
+      this.$set(this.num, i, el);
+    },
+    async getVirginInfo(Id) {
+      const data = await NetRequest.post("getBuilding", { building: Id });
+      const dataFloor = await NetRequest.post("getFloor", { building: data[0].id });
+
+      if (dataFloor.length > 0) {
+        this.floorList = dataFloor;
+        const dataNumber = await NetRequest.post("getNumber", { building: data[0].id, floor: dataFloor[0].floor });
+
+        if (dataNumber.length > 0) {
+          dataNumber.forEach(el => {
+            el.active = false;
+          });
+          this.floorList[0].num = dataNumber;
+          this.num = this.floorList[0].num;
+        } else {
+          this.num = [];
+        }
+      } else {
+        this.floorList = [];
+        this.num = [];
       }
     },
-    selectStore(name) {
-      this.storeName = name;
+    async getBuilding() {
+      const data = await NetRequest.post("getBuilding", { building: this.buildingId });
+      if (data.length > 0) {
+        this.storeList = data;
+        this.storeName = data[0];
+      }
+    },
+    async selectFloor(num, F) {
+      const data = F.num ? F.num : await NetRequest.post("getNumber", { building: this.storeName.id, floor: F.floor });
+      this.floorIndex = num;
+      F.num = data;
+      this.num = F.num;
+    },
+    selectStore(info) {
+      this.getVirginInfo(info.id);
+      this.storeName = info;
       this.isMask = false;
     },
-    openStore() {
+    openStoreList() {
       this.isMask = true;
+    },
+    async openDoor() {
+      const arr = [];
+      this.num.forEach(item => {
+        if (item.active) {
+          arr.push(item.number);
+        }
+      });
+      if (arr.length < 1) {
+        return false;
+      }
+      await NetRequest.postUrl("/openDoor", { rooms: arr });
     },
     closeMask() {
       this.isMask = false;
+    },
+    goCenter() {
+      this.$router.push({ path: "/managementCenter" });
+    },
+    goQR() {
+      this.$router.push({ path: "/scavenging" });
     }
   }
 };
@@ -108,10 +160,11 @@ export default {
   padding-left: 10px;
 }
 .draw {
-  /* display: inline-block; */
+  position: absolute;
+  right: 26px;
+  top: 32px;
   width: 30px;
   height: 24px;
-  float: right;
 }
 .QR {
   color: #4591e4;
@@ -248,6 +301,7 @@ export default {
   color: #000;
 }
 .storeActive {
+  position: relative;
   text-align: center;
   padding: 26px;
   border-top: 2px solid #f6f6f6;

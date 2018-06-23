@@ -2,7 +2,7 @@
   <div class="wrap">
     <div class="floor flex-between">
       <span>房号</span>
-      <span class="num">1层202</span>
+      <span class="num">{{floor.split(",")[0]}}层{{floor.split(",")[1]}}</span>
     </div>
     <div class="setting ">
       <div class="item flex-between">
@@ -27,28 +27,55 @@
 </template>
 <script>
 import TipMes from "@/components/common/tipMes";
+import NetRequest from "@/utils/NetRequest";
 export default {
   components: {
     TipMes
   },
   data() {
     return {
+      devicePwd: "",
       oldCode: "",
       newCode: "",
       confirmCode: "",
       isDisplay: false,
-      message: {}
+      message: {},
+      userId: JSON.parse(window.sessionStorage.getItem("info")).id,
+      floor: JSON.parse(window.sessionStorage.getItem("info")).address
     };
   },
   mounted() {
     document.querySelector("title").innerText = "设置设备密码";
+    this.getDevicePwd();
+    console.log(JSON.parse(window.sessionStorage.getItem("info")).address.split(","));
   },
   watch: {},
   methods: {
-    refer() {
-      if (!this.oldCode || !this.newCode || !this.confirmCode) {
+    async getDevicePwd() {
+      const data = await NetRequest.post("getDevicePwd", { id: this.userId });
+      this.devicePwd = data[0].password;
+    },
+    match(Num) {
+      const Regular = /^\d{6,8}$/;
+      if (Regular.test(Num)) {
+        return true;
+      } else {
+        return false;
+      }
+    },
+    async refer() {
+      if (
+        this.match(this.oldCode) &&
+        this.match(this.newCode) &&
+        this.match(this.confirmCode) &&
+        this.oldCode === this.devicePwd &&
+        this.newCode === this.confirmCode
+      ) {
+        await NetRequest.post("updateUserDevicePwd", { id: this.userId, password: this.newCode });
+        window.history.go(-1);
+      } else {
         this.isDisplay = true;
-        this.message = { name: "请输入完整密码", isShow: false };
+        this.message = { name: "密码错误,请重新填写", isShow: false };
         setTimeout(() => {
           this.isDisplay = false;
         }, 1.5e3);

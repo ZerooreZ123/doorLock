@@ -19,21 +19,35 @@ export default {
   data() {
     return {
       sexSective: 0,
-      sexBox: ["男", "女"]
+      sexBox: ["男", "女"],
+      userId: JSON.parse(window.sessionStorage.getItem("info")).id,
+      type: JSON.parse(window.sessionStorage.getItem("info")).type
     };
   },
   watch: {},
   mounted() {
     document.querySelector("title").innerText = "设置性别";
+    this.info();
   },
   methods: {
     selectSex(i) {
       this.sexSective = i;
     },
     async refer() {
-      const data = await NetRequest.post("updateAdminInfo", { name: "陈大山", sex: this.sexBox[this.sexSective], id: 15 });
-      if (JSON.parse(data).result === "T") {
+      if (this.type === "0") {
+        await NetRequest.post("updateAdminInfo", { name: this.name, sex: this.sexBox[this.sexSective], id: this.userId });
       } else {
+        await NetRequest.post("updateTenantInfo", { name: this.name, sex: this.sexBox[this.sexSective], id: this.userId });
+      }
+      window.history.go(-1);
+    },
+    async info() {
+      if (this.type === "0") {
+        const data = await NetRequest.post("getAdminInfo", { id: this.userId });
+        this.name = data[0].name;
+      } else {
+        const data = await NetRequest.post("getTenantInfo", { id: this.userId });
+        this.name = data[0].name;
       }
     }
   }

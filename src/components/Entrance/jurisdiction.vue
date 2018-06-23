@@ -20,16 +20,19 @@ export default {
       this.sexSective = i;
     },
     async jump() {
-      const data = await NetRequest.post("userLogin", { phone: "15015010211" });
-      if (data.type === "0") {
-        this.$router.push({
-          path: "/home"
-        });
-      } else {
-        console.log(data);
-        this.$router.push({
-          path: "/administrator"
-        });
+      // const data = await NetRequest.post("userLogin", { phone: "15015010211" });
+      const data = await NetRequest.post("userLogin", { phone: "15015010411" });
+      if (data.length > 0) {
+        if (data[0].type === "0") {
+          this.$router.push({
+            path: "/administrator"
+          });
+        } else {
+          this.$router.push({
+            path: "/home"
+          });
+        }
+        window.sessionStorage.setItem("info", JSON.stringify(data[0]));
       }
     }
   }
@@ -37,8 +40,6 @@ export default {
 </script>
 
 <style>
-@import url("../../assets/css/index.css");
-
 .index-center {
   position: fixed;
   width: 100%;
