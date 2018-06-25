@@ -3,7 +3,7 @@
     <div class="index-seal" @click="halve">分享</div>
     <div class="qr-cod flex-column">
       <div class="qrBox flex-center">
-        <qrcode :value='qrString' :size=180 type="img"></qrcode>
+        <qrcode :value='qrString' :size=200 type="img"></qrcode>
       </div>
       <p class="scavenging-one">扫码开门</p>
       <p class="scavenging-two">请将二维码对准楼宇门禁的硬件设备扫描</p>
@@ -25,13 +25,14 @@ export default {
   components: { Qrcode },
   data() {
     return {
-      qrString: "1",
-      isMask: false
+      qrString: "",
+      isMask: false,
+      userType: JSON.parse(window.sessionStorage.getItem("info")).type
     };
   },
   mounted() {
     document.querySelector("title").innerText = "扫码开启门禁";
-    this.getScanCode();
+    this.getScanCode(this.userType);
   },
   methods: {
     halve() {
@@ -40,11 +41,12 @@ export default {
     closeMask() {
       this.isMask = false;
     },
-    async getScanCode() {
-      const Id = JSON.parse(window.sessionStorage.getItem("info")).room;
-      const userType = JSON.parse(window.sessionStorage.getItem("info")).type;
-      const data = await NetRequest.postUrl("scanCode", { id: Id, type: userType });
-      console.log(data);
+    async getScanCode(codeType) {
+      const temp = window.sessionStorage.getItem("info");
+      const userBuilding = JSON.parse(temp).building;
+      const userRoom = JSON.parse(temp).room;
+      const data = await NetRequest.postUrl("/scanCode", { id: codeType === "0" ? userBuilding : userRoom, type: codeType });
+      this.qrString = data.code;
     }
   }
 };
@@ -58,8 +60,9 @@ export default {
   margin-top: 214px;
 }
 .qrBox {
-  width: 462px;
-  height: 462px;
+  padding: 20px 20px 2px;
+  /* width: 462px;
+  height: 462px; */
   border: 2px solid #eff6fd;
   border-radius: 6px;
   box-shadow: 10px 10px 10px #eff6fd;

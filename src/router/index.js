@@ -9,7 +9,6 @@ const ManagementCenter = resolve => require(["@/components/managementCenter"], r
 const SettingName = resolve => require(["@/components/setting/settingName"], resolve);
 const SettingPassword = resolve => require(["@/components/setting/settingPassword"], resolve);
 const SettingSex = resolve => require(["@/components/setting/settingSex"], resolve);
-const SettingPhoto = resolve => require(["@/components/setting/settingPhoto"], resolve);
 Vue.use(Router);
 
 export default new Router({
@@ -57,11 +56,6 @@ export default new Router({
       path: "/settingSex",
       name: "SettingSex",
       component: SettingSex
-    },
-    {
-      path: "/settingPhoto",
-      name: "SettingPhoto",
-      component: SettingPhoto
     }
   ]
 });

@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="index-center">
-      <img src="../../assets/image/sorry.png" alt="">
+      <img src="@/assets/image/sorry.png" alt="">
       <p class="remarks-one">抱歉, 您暂无开门权限</p>
       <p class="remarks-two">租客的开门权限需要联系管理员在pc端后台设备</p>
     </div>
@@ -12,23 +12,40 @@
 import NetRequest from "@/utils/NetRequest";
 export default {
   mounted() {
+    // setTimeout(() => {
+    //   window.workgo.getAuth(window.appId, window.APPSercet, result => {
+    //     if (result.success) {
+    //       this.workGoUser();
+    //     } else {
+    //       alert(result.errMsg);
+    //     }
+    //   });
+    // }, 100);
     document.querySelector("title").innerText = "智能门锁";
     this.jump();
   },
   methods: {
+    // workGoUser() {
+    //   // 获取用户信息
+    //   window.workgo.getUserInfo(result => {
+    //     // window.workPhone = result.mobile;
+    //     // window.workid = result.userId;
+    //     // this.jump(result.mobile);
+    //   });
+    // },
     selectSex(i) {
       this.sexSective = i;
     },
     async jump() {
-      // const data = await NetRequest.post("userLogin", { phone: "15015010211" });
-      const data = await NetRequest.post("userLogin", { phone: "15015010411" });
+      const data = await NetRequest.post("userLogin", { phone: 15015010211 });
+      // const data = await NetRequest.post("userLogin", { phone: "15015010411" });
       if (data.length > 0) {
         if (data[0].type === "0") {
-          this.$router.push({
+          this.$router.replace({
             path: "/administrator"
           });
         } else {
-          this.$router.push({
+          this.$router.replace({
             path: "/home"
           });
         }

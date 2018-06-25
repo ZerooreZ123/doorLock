@@ -75,6 +75,7 @@ export default {
 
       if (dataFloor.length > 0) {
         this.floorList = dataFloor;
+        this.floorIndex = 0;
         const dataNumber = await NetRequest.post("getNumber", { building: data[0].id, floor: dataFloor[0].floor });
 
         if (dataNumber.length > 0) {
@@ -119,10 +120,11 @@ export default {
           arr.push(item.number);
         }
       });
+      console.log(arr);
       if (arr.length < 1) {
         return false;
       }
-      await NetRequest.postUrl("/openDoor", { rooms: arr });
+      // await NetRequest.postUrl("/openDoor", { rooms: arr });
     },
     closeMask() {
       this.isMask = false;
@@ -138,6 +140,13 @@ export default {
 </script>
 
 <style scoped>
+.wrap {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 88%;
+}
 .header {
   position: fixed;
   left: 0;
@@ -149,7 +158,8 @@ export default {
 .site {
   height: 102px;
   padding: 0 30px;
-  border-bottom: 3px solid #f6f6f6;
+  border-bottom: 2px solid #f6f6f6;
+  box-shadow: 0px 4px 4px #d9d9d9;
   font-size: 28px;
   color: #000;
 }
@@ -196,6 +206,7 @@ export default {
   font-size: 30px;
   color: #767676;
   background: #fff;
+  border-bottom: 1px solid #f6f6f6;
   border-top: 1px solid #f6f6f6;
 }
 .floorActive {
@@ -204,9 +215,11 @@ export default {
   align-items: center;
   font-size: 30px;
   color: #4591e4;
-  width: 100%;
+  width: 96%;
   height: 80px;
-  border-left: 5px solid #4591e4;
+  border-left: 6px solid #4591e4;
+  border-bottom: 1px solid #f6f6f6;
+  border-top: 1px solid #f6f6f6;
   background: #f3f3f3;
 }
 .room {
@@ -268,7 +281,7 @@ export default {
   border-radius: 50%;
   font-size: 28px;
   color: #4591e4;
-  box-shadow: 2px 4px 8px #bfbfbf;
+  box-shadow: 2px 8px 8px #bfbfbf;
 }
 .mask,
 .masktop {

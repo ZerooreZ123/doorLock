@@ -3,7 +3,7 @@
     <div class="group">
       <div class="sexItem flex-between" v-for="(item,index) in sexBox" :key="index" @click="selectSex(index)">
         <div class="sex">{{item}}</div>
-        <img class="icon" :src="require('@/assets/img/icon/Tick.png')" v-if="sexSective=== index? true: false" alt="">
+        <img class="icon" :src="require('@/assets/img/icon/Tick.png')" v-if="userSex === item ? true: false" alt="">
       </div>
     </div>
     <div>
@@ -18,10 +18,11 @@ import NetRequest from "@/utils/NetRequest";
 export default {
   data() {
     return {
-      sexSective: 0,
+      sexSective: "",
       sexBox: ["男", "女"],
       userId: JSON.parse(window.sessionStorage.getItem("info")).id,
-      type: JSON.parse(window.sessionStorage.getItem("info")).type
+      type: JSON.parse(window.sessionStorage.getItem("info")).type,
+      userSex: window.sessionStorage.getItem("userSex")
     };
   },
   watch: {},
@@ -32,6 +33,7 @@ export default {
   methods: {
     selectSex(i) {
       this.sexSective = i;
+      this.userSex = this.sexBox[i];
     },
     async refer() {
       if (this.type === "0") {

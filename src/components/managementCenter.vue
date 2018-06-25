@@ -18,18 +18,19 @@
         </span>
       </div>
     </div>
-    <div class="group" @click="goCenter">
+    <div class="group lie">
       <div class="item flex-between">
         <span>人脸识别</span>
-        <span class="flex-center">设置
-          <img class="icon" :src="require('@/assets/img/icon/go.png')" alt="">
+        <span :class="faceSet=== '未设置'  ? 'grayColor flex-center': 'flex-center' ">{{faceSet}}
+          <img class="icon " :src="require( '@/assets/img/icon/go.png') " alt=" ">
         </span>
       </div>
+      <input @change="getBase64 " class="upload " ref="files" type="file" multiple="multiple " />
     </div>
-    <div v-if="type === '0'?false:true" class="group" @click="setPassword">
-      <div class="item flex-between">
+    <div v-if="type==='0' ?false:true " class="group " @click="setPassword ">
+      <div class="item flex-between ">
         <span>修改设置密码</span>
-        <img class="icon" :src="require('@/assets/img/icon/go.png')" alt="">
+        <img class="icon " :src="require( '@/assets/img/icon/go.png') " alt=" ">
       </div>
     </div>
   </div>
@@ -42,7 +43,8 @@ export default {
       name: "",
       sex: "",
       type: JSON.parse(window.sessionStorage.getItem("info")).type,
-      phone: JSON.parse(window.sessionStorage.getItem("info")).phone
+      phone: JSON.parse(window.sessionStorage.getItem("info")).phone,
+      faceSet: ""
     };
   },
   watch: {},
@@ -51,6 +53,32 @@ export default {
     document.querySelector("title").innerText = "管理中心";
   },
   methods: {
+    getBase64(event) {
+      var data = event.target.files;
+      var file = [];
+      for (var i in data) {
+        if (data.hasOwnProperty(i)) {
+          file.push(data[i]);
+        }
+      }
+      file.forEach(el => {
+        if (window.FileReader) {
+          var fr = new FileReader();
+          fr.onloadend = e => {
+            var result = e.target.result.split(",");
+            this.uploadFace(result[1]);
+          };
+          fr.readAsDataURL(el);
+        } else {
+          alert("NO FileReader!");
+        }
+      });
+    },
+    async uploadFace(stringBase64) {
+      const Id = JSON.parse(window.sessionStorage.getItem("info")).id;
+      const userType = JSON.parse(window.sessionStorage.getItem("info")).type;
+      await NetRequest.postUrl("/uploadFace", { image: stringBase64, id: Id, type: userType });
+    },
     click(key) {
       console.log(key);
     },
@@ -63,9 +91,6 @@ export default {
     setPassword() {
       this.$router.push({ path: "/settingPassword" });
     },
-    goCenter() {
-      this.$router.push({ path: "/settingPhoto" });
-    },
     async info() {
       const userId = JSON.parse(window.sessionStorage.getItem("info")).id;
       const type = JSON.parse(window.sessionStorage.getItem("info")).type;
@@ -73,10 +98,23 @@ export default {
         const data = await NetRequest.post("getAdminInfo", { id: userId });
         this.name = data[0].name;
         this.sex = data[0].sex;
+        window.sessionStorage.setItem("userSex", this.sex);
+        if (data[0].faceSet) {
+          this.faceSet = "已开启";
+        } else {
+          this.faceSet = "未设置";
+        }
       } else {
         const data = await NetRequest.post("getTenantInfo", { id: userId });
         this.name = data[0].name;
         this.sex = data[0].sex;
+        window.sessionStorage.setItem("userSex", this.sex);
+        window.userSex = data[0].sex;
+        if (data[0].faceSet) {
+          this.faceSet = "已开启";
+        } else {
+          this.faceSet = "未设置";
+        }
       }
     }
   }
@@ -100,6 +138,19 @@ export default {
   border-top: 2px solid #f6f6f6;
   border-bottom: 2px solid #f6f6f6;
 }
+.lie {
+  position: relative;
+}
+.upload {
+  z-index: 220;
+  position: absolute;
+  top: 0;
+  left: 0;
+  color: transparent;
+  opacity: 0;
+  width: 100%;
+  height: 100%;
+}
 .item {
   height: 90px;
   border-bottom: 1px solid #f6f6f6;
@@ -108,5 +159,8 @@ export default {
   width: 16px;
   height: 24px;
   margin-left: 14px;
+}
+.grayColor {
+  color: #999;
 }
 </style>

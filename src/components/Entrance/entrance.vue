@@ -14,8 +14,8 @@
       </p>
       <p class="remarks-two">{{remarksTwo}}</p>
     </div>
-    <div class="btn-scaveng">
-      <button @click="onScavenging">扫码开启门禁</button>
+    <div class="buttonBox flex-center">
+      <div @click="onScavenging" class="button flex-center">扫码开启门禁</div>
     </div>
   </div>
 </template>
@@ -26,7 +26,7 @@
 export default {
   data() {
     return {
-      room: "1001",
+      room: JSON.parse(window.sessionStorage.getItem("info")).address,
       remarksOne: "门锁开门",
       remarksTwo: "点击长按即可开门",
       remarks: true,
@@ -104,14 +104,6 @@ export default {
   line-height: 80px;
   background-color: #fff;
 }
-
-.btn-scaveng {
-  position: fixed;
-  width: 96%;
-  padding: 20px;
-  top: 80%;
-}
-
 .index-root .index-center {
   position: fixed;
   top: 180px;
@@ -133,7 +125,7 @@ export default {
 }
 
 .index-center .remarks-one .click {
-  background: url("../../assets/image/click.png");
+  background: url("../../../static/images/click.png");
   background-size: 100% 100%;
   top: 8px;
   width: 36px;
@@ -141,14 +133,14 @@ export default {
 }
 
 .smile {
-  background: url("../../assets/image/smile.png");
+  background: url("../../../static/images/smile.png");
   top: 8px;
   width: 40px;
   height: 40px;
 }
 
 .sad {
-  background: url("../../assets/image/sad.png");
+  background: url("../../../static/images/sad.png");
   top: 8px;
   width: 40px;
   height: 40px;
@@ -161,7 +153,7 @@ export default {
 }
 
 .index-center #index-img i {
-  background: url("../../assets/image/index.png");
+  background: url("../../../static/images/index.png");
   background-size: 100% 100%;
   display: inline-block;
   width: 70%;
@@ -169,7 +161,7 @@ export default {
 }
 
 .index-center #index-img i:active {
-  background: url("../../assets/image/HoldDowm.png");
+  background: url("../../../static/images/HoldDowm.png");
   background-size: 100% 100%;
 }
 
@@ -180,7 +172,7 @@ export default {
 }
 
 .index-center #index-img .lock {
-  background: url("../../assets/image/lock.png");
+  background: url("../../../static/images/lock.png");
   background-size: 100% 100%;
   width: 64px;
   height: 86px;
@@ -189,7 +181,7 @@ export default {
 }
 
 .tick {
-  background: url("../../assets/image/Tick.png");
+  background: url("../../../static/images/Tick.png");
   width: 116px;
   height: 84px;
   left: 44%;
@@ -197,10 +189,25 @@ export default {
 }
 
 .fail {
-  background: url("../../assets/image/fail.png");
+  background: url("../../../static/images/fail.png");
   width: 20px;
   height: 114px;
   left: 49%;
   top: 390px;
+}
+.buttonBox {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 200px;
+}
+.button {
+  width: 83.2%;
+  height: 78px;
+  font-size: 30px;
+  color: #65a2e6;
+  border: 2px solid #65a2e6;
+  border-radius: 4px;
 }
 </style>
