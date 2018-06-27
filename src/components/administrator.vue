@@ -13,7 +13,7 @@
         <div @click="selectFloor(index,i)" :class="floorIndex===index?'floorActive':'floorItem'" v-for="(i,index) in floorList" :key="index">{{i.floor}}</div>
       </div>
       <div class="room">
-        <span @click="selectRoom(item,index)" :class="item.active ? 'selectRoom' : 'roomItem'" v-for="(item,index) in num" :key="index">{{item.number}}
+        <span @click="selectRoom(item,index)" :class="item.active&&roomIndex ===index ? 'selectRoom' : 'roomItem'" v-for="(item,index) in num" :key="index">{{item.number}}
         </span>
       </div>
     </div>
@@ -61,12 +61,15 @@ export default {
   },
   methods: {
     selectRoom(el, i) {
+      this.roomIndex = i;
       if (el.active) {
         el.active = false;
       } else {
+        this.num.forEach(e => {
+          e.active = false;
+        });
         el.active = true;
       }
-      // el.active = !el.active;
       this.$set(this.num, i, el);
     },
     async getVirginInfo(Id) {
@@ -100,10 +103,10 @@ export default {
       }
     },
     async selectFloor(num, F) {
-      const data = F.num ? F.num : await NetRequest.post("getNumber", { building: this.storeName.id, floor: F.floor });
+      const data = await NetRequest.post("getNumber", { building: this.storeName.id, floor: F.floor });
       this.floorIndex = num;
-      F.num = data;
-      this.num = F.num;
+      // F.num = data;
+      this.num = data;
     },
     selectStore(info) {
       this.getVirginInfo(info.id);
