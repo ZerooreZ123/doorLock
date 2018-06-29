@@ -18,7 +18,7 @@
         <input type="password" placeholder="请再次输入新密码" v-model="confirmCode">
       </div>
     </div>
-    <div class="tip flex-end">密码必须是4至6位纯数字</div>
+    <div class="tip flex-end">密码必须是6至8位纯数字</div>
     <div class="buttonBox flex-center">
       <div @click="refer" :class="oldCode&&newCode&&confirmCode?'buttonDeep flex-center':'buttonTint flex-center'">完成</div>
     </div>
@@ -34,29 +34,23 @@ export default {
   },
   data() {
     return {
-      devicePwd: "",
+      devicePwd: window.sessionStorage.getItem("passWord"),
       oldCode: "",
       newCode: "",
       confirmCode: "",
       isDisplay: false,
       message: {},
-      userId: JSON.parse(window.sessionStorage.getItem("info")).id,
+      roomId: JSON.parse(window.sessionStorage.getItem("info")).room,
       floor: JSON.parse(window.sessionStorage.getItem("info")).address
     };
   },
   mounted() {
     document.querySelector("title").innerText = "设置设备密码";
-    // this.getDevicePwd();
-    console.log(JSON.parse(window.sessionStorage.getItem("info")).address.split(","));
   },
   watch: {},
   methods: {
-    async getDevicePwd() {
-      const data = await NetRequest.post("getDevicePwd", { id: this.userId });
-      this.devicePwd = data[0].password;
-    },
     match(Num) {
-      const Regular = /^\d{4,6}$/;
+      const Regular = /^\d{6,8}$/;
       if (Regular.test(Num)) {
         return true;
       } else {
@@ -64,8 +58,15 @@ export default {
       }
     },
     async refer() {
-      if (this.match(this.oldCode) && this.match(this.newCode) && this.match(this.confirmCode) && this.newCode === this.confirmCode) {
-        await NetRequest.post("updateUserDevicePwd", { id: this.userId, password: this.newCode });
+      console.log(`设备密码:${this.devicePwd}  旧密码:${this.oldCode}  新密码:${this.newCode}  确认新密码:${this.confirmCode}`);
+      if (
+        this.match(this.oldCode) &&
+        this.match(this.newCode) &&
+        this.match(this.confirmCode) &&
+        this.devicePwd === this.oldCode &&
+        this.newCode === this.confirmCode
+      ) {
+        await NetRequest.postUrl("/updateDevicePwd", { room: this.roomId, password: this.newCode });
         window.history.go(-1);
       } else {
         this.isDisplay = true;

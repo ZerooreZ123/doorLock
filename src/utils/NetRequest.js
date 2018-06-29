@@ -31,31 +31,34 @@ axios.interceptors.response.use(
 
 export default {
   post(url, param = {}, error) {
-    return axios({ method: "post", url: "/api", data: { apiName: url, params: param } }).then(result => {
-      console.log(url, result);
-      if (result.success === "T") {
-        return result.data;
-      } else {
-        if (error) {
-          error();
+    return axios({ method: "post", url: "/api", data: { apiName: url, params: param } })
+      .then(result => {
+        console.log(url, result);
+        if (result.success === "T") {
+          return result.data;
         } else {
-          // alert(result.msg)
+          error && error();
+          return false;
         }
-      }
-    });
+      })
+      .catch(() => {
+        return false;
+      });
   },
   postUrl(url, param = {}, error) {
-    return axios({ method: "post", url, data: param }).then(result => {
-      // console.log(url, result)
-      if (result.success === "T") {
-        return result.data;
-      } else {
-        if (error) {
-          error();
+    return axios({ method: "post", url, data: param })
+      .then(result => {
+        console.log(result);
+        if (result.success === "T") {
+          return result.data;
         } else {
-          // alert(result.msg)
+          alert(result.msg);
+          error && error();
+          return false;
         }
-      }
-    });
+      })
+      .catch(() => {
+        return false;
+      });
   }
 };

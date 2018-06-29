@@ -12,33 +12,39 @@
 import NetRequest from "@/utils/NetRequest";
 export default {
   mounted() {
-    // setTimeout(() => {
-    //   window.workgo.getAuth(window.appId, window.APPSercet, result => {
-    //     if (result.success) {
-    //       this.workGoUser();
-    //     } else {
-    //       alert(result.errMsg);
-    //     }
-    //   });
-    // }, 100);
+    setTimeout(() => {
+      alert("开始调用");
+      alert(JSON.stringify(window.GoGoRoom));
+      window.GoGoRoom.getAuth(window.appId, window.secretKey, result => {
+        alert(JSON.stringify(result));
+        if (result.success) {
+          alert("成功回调");
+          this.GoGoRoomUser();
+        } else {
+          alert(result.errMsg);
+        }
+      });
+    }, 100);
     document.querySelector("title").innerText = "智能门锁";
-    this.jump();
+    // this.jump();
   },
   methods: {
-    // workGoUser() {
-    //   // 获取用户信息
-    //   window.workgo.getUserInfo(result => {
-    //     // window.workPhone = result.mobile;
-    //     // window.workid = result.userId;
-    //     // this.jump(result.mobile);
-    //   });
-    // },
-    selectSex(i) {
-      this.sexSective = i;
+    GoGoRoomUser() {
+      // 获取用户信息
+      alert("开始获取用户信息");
+      window.GoGoRoom.getUserInfo(result => {
+        alert(result.mobile);
+        // window.workPhone = result.mobile;
+        // window.workid = result.userId;
+        this.jump(result.mobile);
+      });
     },
-    async jump() {
-      const data = await NetRequest.post("userLogin", { phone: 15015010211 });
-      // const data = await NetRequest.post("userLogin", { phone: "15015010411" });
+    // selectSex(i) {
+    //   this.sexSective = i;
+    // },
+    async jump(mobile) {
+      const data = await NetRequest.post("userLogin", { phone: mobile });
+      // const data = await NetRequest.post("userLogin", { phone: "15015010522" });
       if (data.length > 0) {
         if (data[0].type === "0") {
           this.$router.replace({

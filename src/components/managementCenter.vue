@@ -77,7 +77,10 @@ export default {
     async uploadFace(stringBase64) {
       const Id = JSON.parse(window.sessionStorage.getItem("info")).id;
       const userType = JSON.parse(window.sessionStorage.getItem("info")).type;
-      await NetRequest.postUrl("/uploadFace", { image: stringBase64, id: Id, type: userType });
+      const data = await NetRequest.postUrl("/uploadFace", { image: stringBase64, id: Id, type: userType });
+      if (JSON.stringify(data) === "{}") {
+        this.info();
+      }
     },
     click(key) {
       console.log(key);
@@ -109,6 +112,7 @@ export default {
         this.name = data[0].name;
         this.sex = data[0].sex;
         window.sessionStorage.setItem("userSex", this.sex);
+        window.sessionStorage.setItem("passWord", data[0].password);
         window.userSex = data[0].sex;
         if (data[0].faceSet) {
           this.faceSet = "已开启";

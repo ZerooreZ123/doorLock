@@ -4,12 +4,12 @@
       <a slot="right" @click="onManagement">管理中心</a>
     </div>
     <div class="index-center">
-      <span id="index-img" @click="onFastener(room)">
+      <span id="index-img" @click="onFastener">
         <i></i>
-        <span class="all" :class="{'lock': isindexImg, 'tick': !isindexImg, 'fail': isfail}"></span>
+        <span class="all" :class="{'lock': isindexImg, 'tick': isSuc, 'fail': isFail}"></span>
       </span>
       <p class="remarks-one">
-        <i class="all-one" :class="{'click':isindexImg, 'smile': !isindexImg}"></i>
+        <i class="all-one" :class="{'click':isindexImg, 'smile': isSuc,'sad': isFail}"></i>
         {{remarksOne}}
       </p>
       <p class="remarks-two">{{remarksTwo}}</p>
@@ -21,40 +21,46 @@
 </template>
 
 <script>
-// import NetRequest from "@/utils/NetRequest";
+import NetRequest from "@/utils/NetRequest";
 
 export default {
   data() {
     return {
-      room: JSON.parse(window.sessionStorage.getItem("info")).address,
+      address: JSON.parse(window.sessionStorage.getItem("info")).address,
+      room: JSON.parse(window.sessionStorage.getItem("info")).room,
       remarksOne: "门锁开门",
       remarksTwo: "点击长按即可开门",
       remarks: true,
       totalTime: 5,
       iconName: "info",
       isindexImg: true,
-      isfail: false
+      isSuc: false,
+      isFail: false
     };
   },
   mounted() {
-    document.querySelector("title").innerText = this.room;
+    document.querySelector("title").innerText = this.address;
   },
   methods: {
-    async onFastener(room) {
-      if (!this.remarks) return;
-      this.remarks = !this.remarks;
-      console.log(room);
-      this.onLock();
-      // let data = await NetRequest.postUrl("openDoor", {rooms: "room"})
-      // console.log(data);
-      this.remarksOne = "开锁成功";
+    async onFastener() {
+      if (!this.remarks) return false;
+      const data = await NetRequest.postUrl("/openDoor", { room: this.room });
+      if (JSON.stringify(data) === "{}") {
+        this.remarksOne = "开锁成功";
+        this.isSuc = true;
+        this.isindexImg = false;
+      } else {
+        this.remarks = !this.remarks;
+        this.remarksOne = "开锁失败";
+        this.isFail = true;
+        this.isindexImg = false;
+      }
       this.remarksTwo = this.totalTime + "s后门锁自动刷新";
       let clock = setInterval(() => {
         this.totalTime--;
         this.remarksTwo = this.totalTime + "s后门锁自动刷新";
         if (this.totalTime < 0) {
           clearInterval(clock);
-          this.onLock();
           this.remarksOne = "门锁开门";
           this.remarksTwo = "点击长按即可开门";
           this.totalTime = 5;
@@ -62,10 +68,6 @@ export default {
           this.isindexImg = true;
         }
       }, 1000);
-    },
-    onLock() {
-      if (!this.isindexImg) return;
-      this.isindexImg = !this.isindexImg;
     },
     onManagement() {
       this.$router.push({

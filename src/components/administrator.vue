@@ -120,14 +120,15 @@ export default {
       const arr = [];
       this.num.forEach(item => {
         if (item.active) {
-          arr.push(item.number);
+          arr.push(item.id);
         }
       });
-      console.log(arr);
       if (arr.length < 1) {
         return false;
       }
-      // await NetRequest.postUrl("/openDoor", { rooms: arr });
+      console.log(arr);
+      const data = await NetRequest.postUrl("/openDoor", { room: arr.toString() });
+      console.log(data);
     },
     closeMask() {
       this.isMask = false;
