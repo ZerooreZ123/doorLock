@@ -82,9 +82,6 @@ export default {
         this.info();
       }
     },
-    click(key) {
-      console.log(key);
-    },
     setName() {
       this.$router.push({ path: "/settingName" });
     },

@@ -27,13 +27,19 @@
         </div>
       </div>
     </div>
+    <tip-mes :msg="message" v-if="isDisplay"></tip-mes>
   </div>
 </template>
 <script>
 import NetRequest from "@/utils/NetRequest";
+import TipMes from "@/components/common/tipMes";
 export default {
+  components: {
+    TipMes
+  },
   data() {
     return {
+      isDisplay: false,
       storeName: {},
       isMask: false,
       isPhoto: false,
@@ -124,11 +130,21 @@ export default {
         }
       });
       if (arr.length < 1) {
+        this.isDisplay = true;
+        this.message = { name: "请选择开锁房间", isShow: false };
+        setTimeout(() => {
+          this.isDisplay = false;
+        }, 1.5e3);
         return false;
       }
-      console.log(arr);
       const data = await NetRequest.postUrl("/openDoor", { room: arr.toString() });
-      console.log(data);
+      if (JSON.stringify(data) === "{}") {
+        this.isDisplay = true;
+        this.message = { name: "开锁成功", isShow: false };
+        setTimeout(() => {
+          this.isDisplay = false;
+        }, 1.5e3);
+      }
     },
     closeMask() {
       this.isMask = false;

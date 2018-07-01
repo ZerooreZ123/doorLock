@@ -5,7 +5,7 @@
     </div>
     <div class="index-center">
       <span id="index-img" @click="onFastener">
-        <i></i>
+        <img class="box" :src="photoSrc" alt="">
         <span class="all" :class="{'lock': isindexImg, 'tick': isSuc, 'fail': isFail}"></span>
       </span>
       <p class="remarks-one">
@@ -22,6 +22,7 @@
 
 <script>
 import NetRequest from "@/utils/NetRequest";
+// import { clearInterval } from "timers";
 
 export default {
   data() {
@@ -30,12 +31,13 @@ export default {
       room: JSON.parse(window.sessionStorage.getItem("info")).room,
       remarksOne: "门锁开门",
       remarksTwo: "点击长按即可开门",
-      remarks: true,
+      remarks: false,
       totalTime: 5,
       iconName: "info",
       isindexImg: true,
       isSuc: false,
-      isFail: false
+      isFail: false,
+      photoSrc: require("@/assets/image/index.png")
     };
   },
   mounted() {
@@ -43,18 +45,26 @@ export default {
   },
   methods: {
     async onFastener() {
-      if (!this.remarks) return false;
-      const data = await NetRequest.postUrl("/openDoor", { room: this.room });
-      if (JSON.stringify(data) === "{}") {
-        this.remarksOne = "开锁成功";
-        this.isSuc = true;
-        this.isindexImg = false;
+      if (this.remarks) {
+        return false;
       } else {
-        this.remarks = !this.remarks;
-        this.remarksOne = "开锁失败";
-        this.isFail = true;
-        this.isindexImg = false;
+        this.remarks = true;
+        this.photoSrc = require("@/assets/image/HoldDowm.png");
+        const data = await NetRequest.postUrl("/openDoor", { room: this.room });
+        if (JSON.stringify(data) === "{}") {
+          this.remarksOne = "开锁成功";
+          this.isSuc = true;
+          this.isindexImg = false;
+          this.time();
+        } else {
+          this.remarksOne = "开锁失败";
+          this.isFail = true;
+          this.isindexImg = false;
+          this.time();
+        }
       }
+    },
+    time() {
       this.remarksTwo = this.totalTime + "s后门锁自动刷新";
       let clock = setInterval(() => {
         this.totalTime--;
@@ -63,9 +73,10 @@ export default {
           clearInterval(clock);
           this.remarksOne = "门锁开门";
           this.remarksTwo = "点击长按即可开门";
+          this.remarks = false;
           this.totalTime = 5;
-          this.remarks = true;
           this.isindexImg = true;
+          this.photoSrc = require("@/assets/image/index.png");
         }
       }, 1000);
     },
@@ -83,7 +94,7 @@ export default {
 };
 </script>
 
-<style>
+<style scoped>
 .index-href {
   text-align: right;
   position: fixed;
@@ -154,18 +165,17 @@ export default {
   margin-top: 32px;
 }
 
-.index-center #index-img i {
-  background: url("../../../static/images/index.png");
+.box {
   background-size: 100% 100%;
   display: inline-block;
   width: 70%;
   height: 525px;
 }
 
-.index-center #index-img i:active {
+/* .box:active {
   background: url("../../../static/images/HoldDowm.png");
   background-size: 100% 100%;
-}
+} */
 
 .index-center #index-img .all {
   display: inline-block;
@@ -174,6 +184,7 @@ export default {
 }
 
 .index-center #index-img .lock {
+  z-index: 200;
   background: url("../../../static/images/lock.png");
   background-size: 100% 100%;
   width: 64px;
@@ -183,6 +194,7 @@ export default {
 }
 
 .tick {
+  z-index: 200;
   background: url("../../../static/images/Tick.png");
   width: 116px;
   height: 84px;
@@ -191,6 +203,7 @@ export default {
 }
 
 .fail {
+  z-index: 200;
   background: url("../../../static/images/fail.png");
   width: 20px;
   height: 114px;

@@ -36,12 +36,17 @@ export default {
       this.userSex = this.sexBox[i];
     },
     async refer() {
-      if (this.type === "0") {
-        await NetRequest.post("updateAdminInfo", { name: this.name, sex: this.sexBox[this.sexSective], id: this.userId });
+      if (this.sexSective === "") {
+        window.history.go(-1);
+        return false;
       } else {
-        await NetRequest.post("updateTenantInfo", { name: this.name, sex: this.sexBox[this.sexSective], id: this.userId });
+        if (this.type === "0") {
+          await NetRequest.post("updateAdminInfo", { name: this.name, sex: this.sexBox[this.sexSective], id: this.userId });
+        } else {
+          await NetRequest.post("updateTenantInfo", { name: this.name, sex: this.sexBox[this.sexSective], id: this.userId });
+        }
+        window.history.go(-1);
       }
-      window.history.go(-1);
     },
     async info() {
       if (this.type === "0") {

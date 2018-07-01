@@ -13,38 +13,21 @@ import NetRequest from "@/utils/NetRequest";
 export default {
   mounted() {
     setTimeout(() => {
-      alert("开始调用");
-      alert(JSON.stringify(window.GoGoRoom));
-      window.GoGoRoom.getAuth(window.appId, window.secretKey, result => {
-        alert(JSON.stringify(result));
+      window.workgo.getAuth(window.appId, window.secretKey, result => {
         if (result.success) {
-          alert("成功回调");
-          this.GoGoRoomUser();
+          window.workgo.getUserInfo(result => {
+            this.jump(result.mobile);
+          });
         } else {
           alert(result.errMsg);
         }
       });
-    }, 100);
+    }, 500);
     document.querySelector("title").innerText = "智能门锁";
-    // this.jump();
   },
   methods: {
-    GoGoRoomUser() {
-      // 获取用户信息
-      alert("开始获取用户信息");
-      window.GoGoRoom.getUserInfo(result => {
-        alert(result.mobile);
-        // window.workPhone = result.mobile;
-        // window.workid = result.userId;
-        this.jump(result.mobile);
-      });
-    },
-    // selectSex(i) {
-    //   this.sexSective = i;
-    // },
     async jump(mobile) {
       const data = await NetRequest.post("userLogin", { phone: mobile });
-      // const data = await NetRequest.post("userLogin", { phone: "15015010522" });
       if (data.length > 0) {
         if (data[0].type === "0") {
           this.$router.replace({
