@@ -2,26 +2,26 @@
   <div class="wrap">
     <div class="group">
       <div class="item flex-between">
-        <span>手机号</span>
+        <span class="tag">手机号</span>
         <span>{{phone}}</span>
       </div>
       <div class="item flex-between" @click="setName">
-        <span>姓名</span>
-        <span class="flex-center">{{name}}
+        <span class="tag">姓名</span>
+        <span class="flex-center" :class="name?'deepColor':'setColor'">{{name|setStatus}}
           <img class="icon" :src="require('@/assets/img/icon/go.png')" alt="">
         </span>
       </div>
       <div class="item flex-between" @click="setSex">
-        <span>性别</span>
-        <span class="flex-center" @click="setSex">{{sex}}
+        <span class="tag">性别</span>
+        <span class="flex-center" :class="sex?'deepColor':'setColor'" @click="setSex">{{sex|setStatus}}
           <img class="icon" :src="require('@/assets/img/icon/go.png')" alt="">
         </span>
       </div>
     </div>
     <div class="group lie">
       <div class="item flex-between">
-        <span>人脸识别</span>
-        <span :class="faceSet=== '未设置'  ? 'grayColor flex-center': 'flex-center' ">{{faceSet}}
+        <span class="tag">人脸识别</span>
+        <span class="flex-center" :class="faceSet? 'deepColor': 'setColor' ">{{faceSet|setStatus}}
           <img class="icon " :src="require( '@/assets/img/icon/go.png') " alt=" ">
         </span>
       </div>
@@ -29,7 +29,7 @@
     </div>
     <div v-if="type==='0' ?false:true " class="group " @click="setPassword ">
       <div class="item flex-between ">
-        <span>修改设置密码</span>
+        <span class="tag">修改设备密码</span>
         <img class="icon " :src="require( '@/assets/img/icon/go.png') " alt=" ">
       </div>
     </div>
@@ -47,7 +47,11 @@ export default {
       faceSet: ""
     };
   },
-  watch: {},
+  filters: {
+    setStatus(value) {
+      return value ? value.toString() : "未设置";
+    }
+  },
   mounted() {
     this.info();
     document.querySelector("title").innerText = "管理中心";
@@ -84,6 +88,7 @@ export default {
     },
     setName() {
       this.$router.push({ path: "/settingName" });
+      window.userName = this.name;
     },
     setSex() {
       this.$router.push({ path: "/settingSex" });
@@ -102,7 +107,7 @@ export default {
         if (data[0].faceSet) {
           this.faceSet = "已开启";
         } else {
-          this.faceSet = "未设置";
+          this.faceSet = "";
         }
       } else {
         const data = await NetRequest.post("getTenantInfo", { id: userId });
@@ -114,7 +119,7 @@ export default {
         if (data[0].faceSet) {
           this.faceSet = "已开启";
         } else {
-          this.faceSet = "未设置";
+          this.faceSet = "";
         }
       }
     }
@@ -133,7 +138,7 @@ export default {
   font-size: 28px;
 }
 .group {
-  padding: 0 20px;
+  padding: 0 30px;
   margin-bottom: 20px;
   background: #fff;
   border-top: 2px solid #f6f6f6;
@@ -163,5 +168,14 @@ export default {
 }
 .grayColor {
   color: #999;
+}
+.tag {
+  color: #666;
+}
+.setColor {
+  color: #b3b3b3;
+}
+.deepColor {
+  color: #000;
 }
 </style>

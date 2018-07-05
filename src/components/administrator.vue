@@ -40,6 +40,7 @@ export default {
   data() {
     return {
       isDisplay: false,
+      message: "",
       storeName: {},
       isMask: false,
       isPhoto: false,
@@ -52,7 +53,8 @@ export default {
       storeList: [],
       floorList: [],
       numList: [],
-      num: []
+      num: [],
+      remarks: false
     };
   },
   mounted() {
@@ -81,7 +83,7 @@ export default {
     async getVirginInfo(Id) {
       const data = await NetRequest.post("getBuilding", { building: Id });
       const dataFloor = await NetRequest.post("getFloor", { building: data[0].id });
-
+      this.storeName = data[0];
       if (dataFloor.length > 0) {
         this.floorList = dataFloor;
         this.floorIndex = 0;
@@ -105,7 +107,6 @@ export default {
       const data = await NetRequest.post("getBuilding", { building: this.buildingId });
       if (data.length > 0) {
         this.storeList = data;
-        this.storeName = data[0];
       }
     },
     async selectFloor(num, F) {
@@ -122,28 +123,46 @@ export default {
     openStoreList() {
       this.isMask = true;
     },
-    async openDoor() {
-      const arr = [];
-      this.num.forEach(item => {
-        if (item.active) {
-          arr.push(item.id);
-        }
-      });
-      if (arr.length < 1) {
-        this.isDisplay = true;
-        this.message = { name: "请选择开锁房间", isShow: false };
-        setTimeout(() => {
-          this.isDisplay = false;
-        }, 1.5e3);
+    openDoor() {
+      if (this.remarks) {
         return false;
-      }
-      const data = await NetRequest.postUrl("/openDoor", { room: arr.toString() });
-      if (JSON.stringify(data) === "{}") {
-        this.isDisplay = true;
-        this.message = { name: "开锁成功", isShow: false };
-        setTimeout(() => {
-          this.isDisplay = false;
-        }, 1.5e3);
+      } else {
+        this.remarks = true;
+        const arr = [];
+        this.num.forEach(item => {
+          if (item.active) {
+            arr.push(item.id);
+          }
+        });
+        if (arr.length < 1) {
+          this.isDisplay = true;
+          this.message = { name: "请选择开锁房间", isShow: false };
+          setTimeout(() => {
+            this.isDisplay = false;
+            this.remarks = false;
+          }, 1.5e3);
+          return false;
+        }
+        const data = NetRequest.postUrl("/openDoor", { room: arr.toString() }, msg => {
+          this.isDisplay = true;
+          this.message = { name: msg, isShow: false };
+          setTimeout(() => {
+            this.isDisplay = false;
+            this.remarks = false;
+          }, 1.5e3);
+        });
+        data.then(e => {
+          if (JSON.stringify(e) === "{}") {
+            this.isDisplay = true;
+            this.message = { name: "开锁成功", isShow: false };
+            setTimeout(() => {
+              this.isDisplay = false;
+            }, 1e3);
+            setTimeout(() => {
+              this.remarks = false;
+            }, 6.5e3);
+          }
+        });
       }
     },
     closeMask() {
@@ -226,8 +245,8 @@ export default {
   font-size: 30px;
   color: #767676;
   background: #fff;
-  border-bottom: 1px solid #f6f6f6;
-  border-top: 1px solid #f6f6f6;
+  border-bottom: 2px solid #f6f6f6;
+  /* border-top: 1px solid #f6f6f6; */
 }
 .floorActive {
   display: flex;
@@ -238,8 +257,8 @@ export default {
   width: 96%;
   height: 80px;
   border-left: 6px solid #4591e4;
-  border-bottom: 1px solid #f6f6f6;
-  border-top: 1px solid #f6f6f6;
+  border-bottom: 2px solid #f6f6f6;
+  /* border-top: 1px solid #f6f6f6; */
   background: #f3f3f3;
 }
 .room {
@@ -302,6 +321,7 @@ export default {
   font-size: 28px;
   color: #4591e4;
   box-shadow: 2px 8px 8px #bfbfbf;
+  background: #fff;
 }
 .mask,
 .masktop {
@@ -315,6 +335,7 @@ export default {
   z-index: 100;
   top: 102px;
   background: rgba(0, 0, 0, 0.5);
+  overflow: auto;
 }
 .masktop {
   z-index: 150;

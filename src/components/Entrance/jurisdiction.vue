@@ -22,7 +22,7 @@ export default {
           alert(result.errMsg);
         }
       });
-    }, 500);
+    }, 200);
     document.querySelector("title").innerText = "智能门锁";
   },
   methods: {
@@ -65,7 +65,7 @@ export default {
 }
 
 .index-center img {
-  width: 40%;
-  height: 300px;
+  width: 250px;
+  height: 250px;
 }
 </style>

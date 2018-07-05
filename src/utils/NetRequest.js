@@ -52,8 +52,7 @@ export default {
         if (result.success === "T") {
           return result.data;
         } else {
-          alert(result.msg);
-          error && error();
+          error && error(result.msg);
           return false;
         }
       })

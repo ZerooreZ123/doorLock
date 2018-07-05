@@ -22,7 +22,7 @@ export default {
       sex: "",
       isDisplay: false,
       message: {},
-      inputText: "",
+      inputText: window.userName,
       isShow: false,
       userId: JSON.parse(window.sessionStorage.getItem("info")).id,
       type: JSON.parse(window.sessionStorage.getItem("info")).type
@@ -49,6 +49,14 @@ export default {
       if (this.inputText === "") {
         this.isDisplay = true;
         this.message = { name: "没有输入名字，请重新填写", isShow: false };
+        setTimeout(() => {
+          this.isDisplay = false;
+        }, 1.5e3);
+        return false;
+      }
+      if (this.inputText.length > 20) {
+        this.isDisplay = true;
+        this.message = { name: "最多不能超过20个字符", isShow: false };
         setTimeout(() => {
           this.isDisplay = false;
         }, 1.5e3);

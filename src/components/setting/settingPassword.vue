@@ -66,8 +66,15 @@ export default {
         this.devicePwd === this.oldCode &&
         this.newCode === this.confirmCode
       ) {
-        await NetRequest.postUrl("/updateDevicePwd", { room: this.roomId, password: this.newCode });
-        window.history.go(-1);
+        const data = await NetRequest.postUrl("/updateDevicePwd", { room: this.roomId, password: this.newCode });
+        if (JSON.stringify(data) === "{}") {
+          this.isDisplay = true;
+          this.message = { name: "修改密码完成", isShow: false };
+          setTimeout(() => {
+            this.isDisplay = false;
+            window.history.go(-1);
+          }, 1.5e3);
+        }
       } else {
         this.isDisplay = true;
         this.message = { name: "密码错误,请重新填写", isShow: false };
