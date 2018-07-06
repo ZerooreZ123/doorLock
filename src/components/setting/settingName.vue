@@ -79,10 +79,10 @@ export default {
       this.$refs.inputFocus.focus();
       if (this.type === "0") {
         const data = await NetRequest.post("getAdminInfo", { id: this.userId });
-        this.sex = data[0].sex;
+        this.sex = data[0].sex ? data[0].sex : "";
       } else {
         const data = await NetRequest.post("getTenantInfo", { id: this.userId });
-        this.sex = data[0].sex;
+        this.sex = data[0].sex ? data[0].sex : "";
       }
     }
   }

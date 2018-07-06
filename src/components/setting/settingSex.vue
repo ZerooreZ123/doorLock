@@ -51,10 +51,10 @@ export default {
     async info() {
       if (this.type === "0") {
         const data = await NetRequest.post("getAdminInfo", { id: this.userId });
-        this.name = data[0].name;
+        this.name = data[0].name ? data[0].name : "";
       } else {
         const data = await NetRequest.post("getTenantInfo", { id: this.userId });
-        this.name = data[0].name;
+        this.name = data[0].name ? data[0].name : "";
       }
     }
   }

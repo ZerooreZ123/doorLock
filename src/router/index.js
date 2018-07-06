@@ -9,13 +9,19 @@ const ManagementCenter = resolve => require(["@/components/managementCenter"], r
 const SettingName = resolve => require(["@/components/setting/settingName"], resolve);
 const SettingPassword = resolve => require(["@/components/setting/settingPassword"], resolve);
 const SettingSex = resolve => require(["@/components/setting/settingSex"], resolve);
+const LoginJump = resolve => require(["@/components/loginJump"], resolve);
 Vue.use(Router);
 
 export default new Router({
   routes: [
     {
       path: "/",
-      redirect: "/jurisdiction"
+      redirect: "/login"
+    },
+    {
+      path: "/login",
+      name: "Login",
+      component: LoginJump
     },
     {
       path: "/home",

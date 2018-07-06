@@ -37,7 +37,7 @@ export default {
       isindexImg: true,
       isSuc: false,
       isFail: false,
-      photoSrc: require("@/assets/image/index.png")
+      photoSrc: require("@/assets/img/index.png")
     };
   },
   mounted() {
@@ -49,7 +49,7 @@ export default {
         return false;
       } else {
         this.remarks = true;
-        this.photoSrc = require("@/assets/image/HoldDowm.png");
+        this.photoSrc = require("@/assets/img/HoldDowm.png");
         const data = await NetRequest.postUrl("/openDoor", { room: this.room });
         if (JSON.stringify(data) === "{}") {
           this.remarksOne = "开锁成功";
@@ -76,7 +76,7 @@ export default {
           this.remarks = false;
           this.totalTime = 5;
           this.isindexImg = true;
-          this.photoSrc = require("@/assets/image/index.png");
+          this.photoSrc = require("@/assets/img/index.png");
         }
       }, 1000);
     },

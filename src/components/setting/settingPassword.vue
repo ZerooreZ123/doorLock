@@ -59,12 +59,21 @@ export default {
     },
     async refer() {
       console.log(`设备密码:${this.devicePwd}  旧密码:${this.oldCode}  新密码:${this.newCode}  确认新密码:${this.confirmCode}`);
+      if (this.oldCode === this.newCode) {
+        this.isDisplay = true;
+        this.message = { name: "新密码不能与旧密码一致", isShow: false };
+        setTimeout(() => {
+          this.isDisplay = false;
+        }, 1.5e3);
+        return false;
+      }
       if (
         this.match(this.oldCode) &&
         this.match(this.newCode) &&
         this.match(this.confirmCode) &&
         this.devicePwd === this.oldCode &&
-        this.newCode === this.confirmCode
+        this.newCode === this.confirmCode &&
+        this.oldCode !== this.newCode
       ) {
         const data = await NetRequest.postUrl("/updateDevicePwd", { room: this.roomId, password: this.newCode });
         if (JSON.stringify(data) === "{}") {

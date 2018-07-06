@@ -1,11 +1,12 @@
 import axios from "axios";
 import crypto from "crypto-js";
+import moment from "moment";
 
 axios.defaults.baseURL = window.baseURL;
 
 const key = "APIHELPER";
 const iv = () => {
-  return Date.parse(new Date()) / (15 * 60 * 1000) + "";
+  return moment().format("YYYYMMDD");
 };
 axios.interceptors.request.use(config => {
   const encrypted = crypto.AES.encrypt(JSON.stringify(config.data), key, {
@@ -42,6 +43,7 @@ export default {
         }
       })
       .catch(() => {
+        error && error("当前网络不稳定");
         return false;
       });
   },
@@ -57,6 +59,7 @@ export default {
         }
       })
       .catch(() => {
+        error && error("当前网络不稳定");
         return false;
       });
   }

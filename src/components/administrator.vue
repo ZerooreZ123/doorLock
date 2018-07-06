@@ -17,7 +17,7 @@
         </span>
       </div>
     </div>
-    <div class="buttonGrounp flex-center" @click="openDoor">开启门锁</div>
+    <div class="buttonGrounp flex-center" @click="openDoor"><img class="load" :src="require('@/assets/img/icon/load.png')" v-if="isIcon">{{text}}</div>
     <div class="ball flex-center" @click="goCenter">管理中心</div>
     <div class="mask" v-if="isMask">
       <div class="masktop" @click="closeMask"></div>
@@ -39,6 +39,8 @@ export default {
   },
   data() {
     return {
+      text: "开启门锁",
+      isIcon: false,
       isDisplay: false,
       message: "",
       storeName: {},
@@ -142,27 +144,34 @@ export default {
             this.remarks = false;
           }, 1.5e3);
           return false;
-        }
-        const data = NetRequest.postUrl("/openDoor", { room: arr.toString() }, msg => {
-          this.isDisplay = true;
-          this.message = { name: msg, isShow: false };
-          setTimeout(() => {
-            this.isDisplay = false;
-            this.remarks = false;
-          }, 1.5e3);
-        });
-        data.then(e => {
-          if (JSON.stringify(e) === "{}") {
+        } else {
+          this.text = "开锁中...";
+          this.isIcon = true;
+          const data = NetRequest.postUrl("/openDoor", { room: arr.toString() }, msg => {
             this.isDisplay = true;
-            this.message = { name: "开锁成功", isShow: false };
+            this.message = { name: msg, isShow: false };
+            this.text = "开启门锁";
+            this.isIcon = false;
             setTimeout(() => {
               this.isDisplay = false;
-            }, 1e3);
-            setTimeout(() => {
               this.remarks = false;
-            }, 6.5e3);
-          }
-        });
+            }, 1.5e3);
+          });
+          data.then(e => {
+            if (JSON.stringify(e) === "{}") {
+              this.isDisplay = true;
+              this.message = { name: "开锁成功", isShow: false };
+              this.text = "开启门锁";
+              this.isIcon = false;
+              setTimeout(() => {
+                this.isDisplay = false;
+              }, 1e3);
+              setTimeout(() => {
+                this.remarks = false;
+              }, 6.5e3);
+            }
+          });
+        }
       }
     },
     closeMask() {
@@ -361,5 +370,11 @@ export default {
   border-top: 2px solid #f6f6f6;
   font-size: 28px;
   color: #4591e4;
+}
+.load {
+  display: inline-block;
+  width: 33px;
+  height: 33px;
+  margin-right: 18px;
 }
 </style>
